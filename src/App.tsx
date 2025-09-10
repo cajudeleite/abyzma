@@ -5,7 +5,7 @@ import Noise from './components/Noise'
 
 const App = () => {
   return (
-    <div className="h-screen w-screen bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10">
+    <div className="h-screen w-screen bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden">
       <Noise
         patternSize={250}
         patternScaleX={1}
