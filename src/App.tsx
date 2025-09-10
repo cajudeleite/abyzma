@@ -15,17 +15,16 @@ const App = () => {
       />
       <FuzzyImage
         src={logo}
-        width={300}
-        height={300}
-        baseIntensity={0.1}
-        hoverIntensity={0.3}
-        enableHover={false}
+        className='w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
+        baseIntensity={0.4}
+        hoverIntensity={0.6}
+        enableHover={true}
       />
       <FuzzyText 
-        baseIntensity={0.2} 
-        hoverIntensity={0.3} 
-        enableHover={false}
-        fontSize="clamp(3rem, 8vw, 7rem)"
+        baseIntensity={0.1} 
+        hoverIntensity={0.2} 
+        enableHover={true}
+        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold'
       >
         COMING SOON
       </FuzzyText>

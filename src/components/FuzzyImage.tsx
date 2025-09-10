@@ -3,8 +3,7 @@ import React, { useEffect, useRef } from "react";
 interface FuzzyImageProps {
   src: string;
   alt?: string;
-  width?: number;
-  height?: number;
+  className?: string; // <-- para usar w-full, max-w-lg etc.
   enableHover?: boolean;
   baseIntensity?: number;
   hoverIntensity?: number;
@@ -13,11 +12,10 @@ interface FuzzyImageProps {
 const FuzzyImage: React.FC<FuzzyImageProps> = ({
   src,
   alt = "",
-  width,
-  height,
+  className = "w-full h-auto", // padrão responsivo
   enableHover = true,
   baseIntensity = 0.18,
-  hoverIntensity = 0.5
+  hoverIntensity = 0.5,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement & { cleanupFuzzyImage?: () => void }>(null);
 
@@ -30,46 +28,40 @@ const FuzzyImage: React.FC<FuzzyImageProps> = ({
     const img = new Image();
     img.src = src;
 
-    img.onload = () => {
+    const renderFuzzyImage = (width: number, height: number) => {
       if (isCancelled) return;
 
-      const finalWidth = width || img.width;
-      const finalHeight = height || img.height;
-
-      canvas.width = finalWidth;
-      canvas.height = finalHeight;
+      canvas.width = width;
+      canvas.height = height;
 
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
-      // Criar um canvas offscreen para copiar a imagem original
       const offscreen = document.createElement("canvas");
-      offscreen.width = finalWidth;
-      offscreen.height = finalHeight;
+      offscreen.width = width;
+      offscreen.height = height;
       const offCtx = offscreen.getContext("2d");
       if (!offCtx) return;
-      offCtx.drawImage(img, 0, 0, finalWidth, finalHeight);
+      offCtx.drawImage(img, 0, 0, width, height);
 
       let isHovering = false;
-      const fuzzRange = 30;
+      const fuzzRange = Math.max(width * 0.02, 5);
 
       const run = () => {
         if (isCancelled) return;
-        ctx.clearRect(-fuzzRange, -fuzzRange, finalWidth + 2 * fuzzRange, finalHeight + 2 * fuzzRange);
+        ctx.clearRect(-fuzzRange, -fuzzRange, width + 2 * fuzzRange, height + 2 * fuzzRange);
         const intensity = isHovering ? hoverIntensity : baseIntensity;
 
-        // Fazemos o mesmo "slice horizontal" linha a linha
-        for (let j = 0; j < finalHeight; j++) {
+        for (let j = 0; j < height; j++) {
           const dx = Math.floor(intensity * (Math.random() - 0.5) * fuzzRange);
-          ctx.drawImage(offscreen, 0, j, finalWidth, 1, dx, j, finalWidth, 1);
+          ctx.drawImage(offscreen, 0, j, width, 1, dx, j, width, 1);
         }
         animationFrameId = window.requestAnimationFrame(run);
       };
 
       run();
 
-      const isInsideImage = (x: number, y: number) =>
-        x >= 0 && x <= finalWidth && y >= 0 && y <= finalHeight;
+      const isInsideImage = (x: number, y: number) => x >= 0 && x <= width && y >= 0 && y <= height;
 
       const handleMouseMove = (e: MouseEvent) => {
         if (!enableHover) return;
@@ -104,7 +96,7 @@ const FuzzyImage: React.FC<FuzzyImageProps> = ({
         canvas.addEventListener("touchend", handleTouchEnd);
       }
 
-      const cleanup = () => {
+      canvas.cleanupFuzzyImage = () => {
         window.cancelAnimationFrame(animationFrameId);
         if (enableHover) {
           canvas.removeEventListener("mousemove", handleMouseMove);
@@ -113,8 +105,24 @@ const FuzzyImage: React.FC<FuzzyImageProps> = ({
           canvas.removeEventListener("touchend", handleTouchEnd);
         }
       };
+    };
 
-      canvas.cleanupFuzzyImage = cleanup;
+    img.onload = () => {
+      // Usa ResizeObserver para manter o canvas responsivo
+      const resizeObserver = new ResizeObserver(() => {
+        const parentWidth = canvas.parentElement?.clientWidth || img.width;
+        const aspectRatio = img.width / img.height;
+        const newWidth = parentWidth;
+        const newHeight = newWidth / aspectRatio;
+        renderFuzzyImage(newWidth, newHeight);
+      });
+
+      resizeObserver.observe(canvas.parentElement || canvas);
+
+      // cleanup observer
+      canvas.cleanupFuzzyImage = () => {
+        resizeObserver.disconnect();
+      };
     };
 
     return () => {
@@ -124,9 +132,9 @@ const FuzzyImage: React.FC<FuzzyImageProps> = ({
         canvas.cleanupFuzzyImage();
       }
     };
-  }, [src, width, height, enableHover, baseIntensity, hoverIntensity]);
+  }, [src, enableHover, baseIntensity, hoverIntensity]);
 
-  return <canvas ref={canvasRef} aria-label={alt} />;
+  return <canvas ref={canvasRef} className={className} aria-label={alt} />;
 };
 
 export default FuzzyImage;
