@@ -3,9 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
+@font-face {
+  font-family: 'Anthrope';
+  src: local('Anthrope'), url(./fonts/Anthrope.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @theme {
   --color-abyzma-dark: #140024;
   --color-abyzma-light: #d7cec7;
+  --font-anthrope: "Anthrope", sans-serif; 
 }
 
 @theme inline {
