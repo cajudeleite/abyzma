@@ -25,7 +25,7 @@ const App = () => {
         hoverIntensity={0.2} 
         enableHover={true}
         fontFamily='Anthrope'
-        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none tracking-widest'
+        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none tracking-widest font-anthrope'
       >
         coming soon
       </FuzzyText>
