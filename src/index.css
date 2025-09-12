@@ -12,7 +12,7 @@
 }
 
 @theme {
-  --color-abyzma-dark: #140024;
+  --color-abyzma-dark: #1B140B;
   --color-abyzma-light: #d7cec7;
   --font-anthrope: "Anthrope", sans-serif; 
 }
@@ -131,4 +131,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.masked-text {
+  background: url('./assets/images/leaves.jpg') center/cover no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
