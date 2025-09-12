@@ -47,7 +47,7 @@ const App = () => {
       <h1 className="hidden text-6xl font-bold masked-text">
         Roots of the Fall
       </h1>
-      <div className="absolute bottom-2">
+      <div className="absolute bottom-0">
         <Dock 
           items={items}
           panelHeight={70}
