@@ -21,7 +21,7 @@ const App = () => {
   ];
 
   return (
-    <div className="h-screen w-screen bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden">
+    <div className="h-[100dvh] w-[100dvw] bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden">
       <Noise
         patternSize={250}
         patternScaleX={1}
