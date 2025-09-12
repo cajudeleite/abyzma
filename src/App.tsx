@@ -52,7 +52,7 @@ const App = () => {
           items={items}
           panelHeight={70}
           baseItemSize={50}
-          magnification={70}
+          magnification={60}
           className='border-none *:border-white *:bg-transparent'
         />
       </div>

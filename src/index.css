@@ -134,7 +134,7 @@
 }
 
 .masked-text {
-  background: url('./assets/images/leaves.jpg') center/cover no-repeat;
+  background: url('./assets/images/leaves.png') center/cover no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

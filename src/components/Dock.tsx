@@ -81,7 +81,10 @@ function DockItem({
       role="button"
       aria-haspopup="true"
     >
-      {Children.map(children, child => cloneElement(child as React.ReactElement, { isHovered }))}
+      {Children.map(children, child => 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        cloneElement(child as React.ReactElement<any>, { isHovered })
+      )}
     </motion.div>
   );
 }
