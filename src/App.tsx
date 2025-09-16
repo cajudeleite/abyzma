@@ -4,6 +4,7 @@ import FuzzyImage from './components/FuzzyImage'
 import FuzzyText from './components/FuzzyText'
 import Noise from './components/Noise'
 import CountUp from './components/CountUp'
+import SplitText from './components/SplitText'
 import InstagramAnimation from './components/InstagramAnimation'
 import { useEffect, useState } from 'react'
 import { fetchCurrentPhaseTicketsAmount } from './api/phase'
@@ -62,9 +63,19 @@ const App = () => {
       <h1 className="hidden text-6xl font-bold masked-text">
         Roots of the Fall
       </h1>
-      <h1 className="text-6xl font-bold">
-        {currentPhaseName}
-      </h1>
+      <SplitText
+        text={currentPhaseName}
+        className="text-6xl font-bold"
+        delay={100}
+        duration={0.6}
+        ease="power3.out"
+        splitType="chars"
+        from={{ opacity: 0, y: 40 }}
+        to={{ opacity: 1, y: 0 }}
+        threshold={0.1}
+        rootMargin="-100px"
+        textAlign="center"
+      />
       {currentPhaseTicketsAmount && currentPhaseTicketsLeft && <>
         <CountUp
           from={currentPhaseTicketsAmount}
