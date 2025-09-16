@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import LottieAnimation from './LottieAnimation';
 import { type AnimationItem } from 'lottie-web';
 import instagramAnimationData from '../assets/lotties/instagram/instagram.json';
@@ -16,6 +16,48 @@ interface InstagramAnimationProps {
   onLeave?: () => void;
 }
 
+// Helper function to convert hex color to RGB array
+const hexToRgb = (hex: string): [number, number, number, number] => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    return [
+      parseInt(result[1], 16) / 255,
+      parseInt(result[2], 16) / 255,
+      parseInt(result[3], 16) / 255,
+      1
+    ];
+  }
+  // Default to white if parsing fails
+  return [1, 1, 1, 1];
+};
+
+// Helper function to modify animation data colors
+const modifyAnimationColors = (data: unknown, strokeColor: string) => {
+  if (!data || typeof data !== 'object' || !('layers' in data)) return data;
+  
+  const modifiedData = JSON.parse(JSON.stringify(data)); // Deep clone
+  const rgbColor = hexToRgb(strokeColor);
+  
+  // Recursively find and replace stroke colors
+  const replaceStrokeColors = (obj: unknown) => {
+    if (typeof obj !== 'object' || obj === null) return;
+    
+    if ('ty' in obj && obj.ty === 'st' && 'c' in obj && obj.c && typeof obj.c === 'object' && 'k' in obj.c && Array.isArray(obj.c.k) && obj.c.k.length === 4) {
+      (obj.c as { k: [number, number, number, number] }).k = rgbColor;
+    }
+    
+    // Recursively process nested objects
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        replaceStrokeColors((obj as Record<string, unknown>)[key]);
+      }
+    }
+  };
+  
+  replaceStrokeColors(modifiedData);
+  return modifiedData;
+};
+
 const InstagramAnimation: React.FC<InstagramAnimationProps> = ({
   size = 56,
   strokeColor = 'white',
@@ -31,8 +73,14 @@ const InstagramAnimation: React.FC<InstagramAnimationProps> = ({
   // Suppress unused variable warning
   void fillColor;
   const animationRef = React.useRef<AnimationItem | null>(null);
-  // Use the original animation data without modification
-  if (!instagramAnimationData) {
+  
+  // Modify animation data with the specified color
+  const modifiedAnimationData = useMemo(() => {
+    if (!instagramAnimationData) return null;
+    return modifyAnimationColors(instagramAnimationData, strokeColor);
+  }, [strokeColor]);
+  
+  if (!modifiedAnimationData) {
     return null;
   }
 
@@ -101,16 +149,10 @@ const InstagramAnimation: React.FC<InstagramAnimationProps> = ({
         display: 'inline-block',
       }}
     >
-      <div
-        style={{
-          filter: strokeColor === 'white' ? 'brightness(0) invert(1)' : `brightness(0) saturate(100%) ${strokeColor}`,
-          width: '100%',
-          height: '100%',
-        }}
-      >
+      <div className='h-full w-full'>
         <LottieAnimation
           ref={animationRef}
-          animationData={instagramAnimationData}
+          animationData={modifiedAnimationData}
           loop={loop}
           autoplay={autoplay}
           speed={speed}

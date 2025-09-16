@@ -3,16 +3,31 @@ import Dock from './components/Dock'
 import FuzzyImage from './components/FuzzyImage'
 import FuzzyText from './components/FuzzyText'
 import Noise from './components/Noise'
+import CountUp from './components/CountUp'
 import InstagramAnimation from './components/InstagramAnimation'
+import { useEffect, useState } from 'react'
+import { fetchCurrentPhaseTicketsAmount } from './api/phase'
 
 const App = () => {
+  const [currentPhaseName, setCurrentPhaseName] = useState('');
+  const [currentPhaseTicketsAmount, setCurrentPhaseTicketsAmount] = useState(null);
+  const [currentPhaseTicketsLeft, setCurrentPhaseTicketsLeft] = useState(null);
+
+  useEffect(() => {
+    fetchCurrentPhaseTicketsAmount().then((data) => {      
+      setCurrentPhaseName(data.name);
+      setCurrentPhaseTicketsAmount(data.ticket_amount);
+      setCurrentPhaseTicketsLeft(data.tickets_left);
+    });
+  }, []);
+
   const items = [
     { 
       icon: (
         <InstagramAnimation 
           size={40} 
-          strokeColor='white' 
-          fillColor='white'
+          strokeColor='#d7cec7' 
+          fillColor='#d7cec7'
         />
       ), 
       label: 'Instagram', 
@@ -31,7 +46,7 @@ const App = () => {
       />
       <FuzzyImage
         src={logo}
-        className='w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
+        className='hidden w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
         baseIntensity={0.6}
         hoverIntensity={0.8}
         enableHover={true}
@@ -40,20 +55,34 @@ const App = () => {
         baseIntensity={0.2} 
         hoverIntensity={0.3} 
         enableHover={true}
-        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
+        className='hidden text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
       >
         COMING SOON
       </FuzzyText>
       <h1 className="hidden text-6xl font-bold masked-text">
         Roots of the Fall
       </h1>
+      <h1 className="text-6xl font-bold">
+        {currentPhaseName}
+      </h1>
+      {currentPhaseTicketsAmount && currentPhaseTicketsLeft && <>
+        <CountUp
+          from={currentPhaseTicketsAmount}
+          to={currentPhaseTicketsLeft}
+          separator=","
+          direction="up"
+          duration={1}
+          className="text-6xl font-bold"
+          />
+        <p className='text-2xl font-bold'>Tickets left</p>
+      </>}
       <div className="absolute bottom-0">
         <Dock 
           items={items}
           panelHeight={70}
           baseItemSize={50}
           magnification={60}
-          className='border-none *:border-white *:bg-transparent'
+          className='border-none *:border-abyzma-light *:bg-transparent'
         />
       </div>
     </div>
