@@ -1,13 +1,10 @@
-import logo from './assets/images/logo.png'
-import Dock from './components/Dock'
-import FuzzyImage from './components/FuzzyImage'
-import FuzzyText from './components/FuzzyText'
-import Noise from './components/Noise'
-import CountUp from './components/CountUp'
-import SplitText from './components/SplitText'
-import InstagramAnimation from './components/InstagramAnimation'
+import logo from '../assets/images/logo.png'
+import FuzzyImage from '../components/FuzzyImage'
+import FuzzyText from '../components/FuzzyText'
+import CountUp from '../components/CountUp'
+import SplitText from '../components/SplitText'
 import { useEffect, useState } from 'react'
-import { fetchCurrentPhaseTicketsAmount } from './api/phase'
+import { fetchCurrentPhaseTicketsAmount } from '../api/phase'
 
 const App = () => {
   const [currentPhaseName, setCurrentPhaseName] = useState('');
@@ -22,29 +19,8 @@ const App = () => {
     });
   }, []);
 
-  const items = [
-    { 
-      icon: (
-        <InstagramAnimation 
-          size={40} 
-          strokeColor='#d7cec7' 
-          fillColor='#d7cec7'
-        />
-      ), 
-      label: 'Instagram', 
-      onClick: () => window.open('https://www.instagram.com/abyzmacrew/', '_blank') 
-    }
-  ];
-
   return (
-    <div className="h-[100dvh] w-[100dvw] bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden">
-      <Noise
-        patternSize={250}
-        patternScaleX={1}
-        patternScaleY={1}
-        patternRefreshInterval={2}
-        patternAlpha={20}
-      />
+    <>
       <FuzzyImage
         src={logo}
         className='hidden w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
@@ -87,16 +63,7 @@ const App = () => {
           />
         <p className='text-2xl font-bold'>Tickets left</p>
       </>}
-      <div className="absolute bottom-0">
-        <Dock 
-          items={items}
-          panelHeight={70}
-          baseItemSize={50}
-          magnification={60}
-          className='border-none *:border-abyzma-light *:bg-transparent'
-        />
-      </div>
-    </div>
+    </>
   )
 }
 
