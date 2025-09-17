@@ -1,11 +1,16 @@
 import { useEffect, useState } from 'react';
 import createCheckoutSession from '../api/stripe';
+import { fetchPhases } from '../api/phase';
 import Stepper, { Step } from '../components/Stepper';
 import Magnet from '../components/Magnet';
+import Counter from '../components/Counter';
+import type Phase from '../types/phase';
 
 const Checkout = () => {
   const [message, setMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+	const [phases, setPhases] = useState<Phase[]>([]);
+	const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     // Check for success or cancel parameters in URL
@@ -15,6 +20,12 @@ const Checkout = () => {
     } else if (urlParams.get('canceled') === 'true') {
       setMessage('Payment canceled. You can try again.');
     }
+
+		fetchPhases().then((data) => {
+			console.log(data);
+			
+			setPhases(data);
+		});
   }, []);
 
   const handleCheckout = async () => {
@@ -31,6 +42,8 @@ const Checkout = () => {
     }
   };
 
+	const activePhase = phases.find(phase => phase.active) || { price: 0 };
+
   return <>
 		<Magnet padding={500} disabled={false} magnetStrength={10}>
 			<Stepper
@@ -41,22 +54,50 @@ const Checkout = () => {
 				onFinalStepCompleted={() => console.log("All steps completed!")}
 				backButtonText="Previous"
 				nextButtonText="Next"
-				contentClassName="w-[50dvw]"
+				className="w-[100dvw]"
+				stepCircleContainerClassName="border-abyzma-light border-2"
 			>
 				<Step>
-					<h2>Welcome to the React Bits stepper!</h2>
-					<p>Check out the next step!</p>
+					<h2 className="text-2xl font-bold mb-4">Welcome to the checkout form</h2>
+					<p>Here you'll be able to buy your ticket for the event</p>
 				</Step>
 				<Step>
-					<h2>Step 2</h2>
-					<img style={{ height: '100px', width: '100%', objectFit: 'cover', objectPosition: 'center -70px', borderRadius: '15px', marginTop: '1em' }} src="https://www.purrfectcatgifts.co.uk/cdn/shop/collections/Funny_Cat_Cards_640x640.png?v=1663150894" />
-					<p>Custom step content!</p>
+					<h2 className="text-2xl font-bold mb-4">Choose the quantity of tickets:</h2>
+					<div className="flex">
+						<div className="space-y-4 border-r-2 border-abyzma-light pr-8 mr-8">		
+							{phases.map((phase, index) => {
+								const activePhaseIndex = phases.findIndex(p => p.active);
+								const isBeforeActive = activePhaseIndex !== -1 && index < activePhaseIndex;
+								
+								return (
+									<p key={phase.name} className={`${phase.active ? 'text-xl font-bold' : 'text-sm'} ${isBeforeActive ? 'line-through' : ''}`}>{phase.name}: {phase.price}€</p>
+								);
+							})}
+						</div>
+						<div className="flex flex-col justify-between">	
+							<div className="flex items-center gap-2">
+								<button disabled={quantity === 1} className="bg-abyzma-light text-abyzma-dark text-2xl font-extrabold px-3 pb-1 rounded-md" onClick={() => setQuantity(quantity - 1)}>-</button>
+								<Counter
+									value={quantity}
+									places={[10, 1]}
+									fontSize={45}
+									padding={5}
+									gap={10}
+									textColor="#d7cec7"
+									fontWeight={900}
+									gradientFrom='transparent'
+								/>
+								<button disabled={quantity === 99} className="bg-abyzma-light text-abyzma-dark text-2xl font-extrabold px-2 pb-1 rounded-md" onClick={() => setQuantity(quantity + 1)}>+</button>
+							</div>
+							<p className="text-lg text-right">Total: <span className="font-bold">{quantity * activePhase.price}€</span></p>
+						</div>
+					</div>
 				</Step>
 				<Step>
 					<div className="bg-gray-800 p-6 rounded-lg">
 						<h2 className="text-xl font-semibold mb-4">Abyzma Ticket</h2>
 						<p className="text-gray-300 mb-4">Ticket for the event</p>
-						<p className="text-2xl font-bold mb-6">$20.00</p>
+						<p className="text-2xl font-bold mb-6">{quantity * activePhase.price}€</p>
 						
 						<button
 							onClick={handleCheckout}
