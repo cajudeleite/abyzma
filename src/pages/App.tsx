@@ -23,7 +23,7 @@ const App = () => {
     <>
       <FuzzyImage
         src={logo}
-        className='hidden w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
+        className='w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
         baseIntensity={0.6}
         hoverIntensity={0.8}
         enableHover={true}
@@ -32,27 +32,24 @@ const App = () => {
         baseIntensity={0.2} 
         hoverIntensity={0.3} 
         enableHover={true}
-        className='hidden text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
+        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
       >
         COMING SOON
       </FuzzyText>
-      <h1 className="hidden text-6xl font-bold masked-text">
-        Roots of the Fall
-      </h1>
-      <SplitText
-        text={currentPhaseName}
-        className="text-6xl font-bold"
-        delay={100}
-        duration={0.6}
-        ease="power3.out"
-        splitType="chars"
-        from={{ opacity: 0, y: 40 }}
-        to={{ opacity: 1, y: 0 }}
-        threshold={0.1}
-        rootMargin="-100px"
-        textAlign="center"
-      />
       {currentPhaseTicketsAmount && currentPhaseTicketsLeft && <>
+        <SplitText
+          text={currentPhaseName}
+          className="text-6xl font-bold"
+          delay={100}
+          duration={0.6}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-100px"
+          textAlign="center"
+        />
         <CountUp
           from={currentPhaseTicketsAmount}
           to={currentPhaseTicketsLeft}

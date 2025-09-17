@@ -1,69 +1,59 @@
-# React + TypeScript + Vite
+# Abyzma Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the Abyzma project! This is a React-based web application for ticket checkout functionality.
 
-Currently, two official plugins are available:
+## 🚀 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** - UI components and state management
+- **React Router DOM** - Client-side routing
+- **React Bits** - Pre-built, customizable UI components
+- **TypeScript** - Type safety and better development experience
+- **Tailwind CSS** - Styling and responsive design
+- **Framer Motion** - Smooth animations and transitions
+- **Animated Icons** - Dynamic, interactive iconography
 
-## Expanding the ESLint configuration
+## 📁 Project Structure
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Pages
+- **`/` (Home)** - Landing page with a "coming soon" message
+- **`/checkout`** - Ticket checkout page (currently in development)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Components
+- **React Bits** - Pre-built UI components for consistent design
+- **Animated Icons** - Interactive icons with smooth transitions
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### API Integration
+The project connects to an external backend through the `src/api/` folder:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **`stripe.ts`** - Handles Stripe payment processing integration
+- **`phase.ts`** - Fetches the current phase information, like how many tickets are lefts etc...
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠️ Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+2. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+3. Open your browser and navigate to `http://localhost:5173`
+
+## 🎯 Current Development Status
+
+- ✅ Home page with coming soon message
+- 🚧 Checkout page with multi-step form (in progress)
+- ✅ Stripe payment integration setup
+- ✅ Responsive design and animations
+
+## 📝 Notes for New Team Members
+
+- We use TypeScript with strict type checking
+- All components are built with modern React patterns (hooks, functional components)
+- The Stepper component is highly customizable and reusable
+- We leverage React Bits for consistent UI components across the application
+- Animated icons are used throughout for enhanced user experience
+- API calls are organized in the `src/api/` folder for easy maintenance
