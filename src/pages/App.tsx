@@ -11,6 +11,8 @@ const App = () => {
   const [currentPhaseTicketsAmount, setCurrentPhaseTicketsAmount] = useState(null);
   const [currentPhaseTicketsLeft, setCurrentPhaseTicketsLeft] = useState(null);
 
+  const countdownActive = false;
+
   useEffect(() => {
     fetchCurrentPhaseTicketsAmount().then((data) => {      
       setCurrentPhaseName(data.name);
@@ -36,7 +38,7 @@ const App = () => {
       >
         COMING SOON
       </FuzzyText>
-      {currentPhaseTicketsAmount && currentPhaseTicketsLeft && <>
+      {currentPhaseTicketsAmount && currentPhaseTicketsLeft && countdownActive && <>
         <SplitText
           text={currentPhaseName}
           className="text-6xl font-bold"

@@ -8,6 +8,7 @@ import InstagramAnimation from './components/InstagramAnimation'
 import './index.css'
 import App from './pages/App.tsx'
 import Checkout from './pages/Checkout.tsx'
+import Success from './pages/Success.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <Checkout />,
+  },
+  {
+    path: "/success",
+    element: <Success />,
   },
 ]);
 

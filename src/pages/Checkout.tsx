@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import createCheckoutSession from '../api/stripe';
+import {createCheckoutSession} from '../api/stripe';
 import { fetchPhases } from '../api/phase';
 import Stepper, { Step } from '../components/Stepper';
 import Magnet from '../components/Magnet';
@@ -11,6 +11,8 @@ const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false)
 	const [phases, setPhases] = useState<Phase[]>([]);
 	const [quantity, setQuantity] = useState(1);
+	const [name, setName] = useState('');
+	const [email, setEmail] = useState('');
 
   useEffect(() => {
     // Check for success or cancel parameters in URL
@@ -33,7 +35,7 @@ const Checkout = () => {
     setMessage('');
 
     try {
-      const { checkoutUrl } = await createCheckoutSession();
+      const { checkoutUrl } = await createCheckoutSession(quantity, name, email);
       // Redirect to Stripe's hosted checkout page
       window.location.href = checkoutUrl;
     } catch {
@@ -91,6 +93,13 @@ const Checkout = () => {
 							</div>
 							<p className="text-lg text-right">Total: <span className="font-bold">{quantity * activePhase.price}€</span></p>
 						</div>
+					</div>
+				</Step>
+				<Step>
+					<h2 className="text-2xl font-bold mb-4">Provide your personal information:</h2>
+					<div className="flex flex-col gap-4">
+						<input type="text" placeholder="Name" className="w-full p-2 rounded-md border-abyzma-light border-2" value={name} onChange={(e) => setName(e.target.value)} />
+						<input type="email" placeholder="Email" className="w-full p-2 rounded-md border-abyzma-light border-2" value={email} onChange={(e) => setEmail(e.target.value)} />
 					</div>
 				</Step>
 				<Step>
