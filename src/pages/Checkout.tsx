@@ -108,7 +108,7 @@ const Checkout = () => {
 				className="w-[90dvw]"
 				stepCircleContainerClassName="border-abyzma-light border-2"
 				validateStep={validateStep}
-				nextButtonProps={{ className: 'bg-abyzma-light text-abyzma-dark font-bold text-xl px-2 pb-1 rounded-md' }}
+				nextButtonProps={{ className: 'bg-abyzma-light text-abyzma-dark font-bold text-xl px-2 py-1 rounded-md' }}
 			>
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Welcome to the checkout form</h2>
