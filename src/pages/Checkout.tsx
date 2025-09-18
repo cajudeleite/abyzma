@@ -13,6 +13,7 @@ const Checkout = () => {
 	const [quantity, setQuantity] = useState(1);
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
+	const [validationError, setValidationError] = useState('');
 
   useEffect(() => {
     // Check for success or cancel parameters in URL
@@ -46,18 +47,49 @@ const Checkout = () => {
 
 	const activePhase = phases.find(phase => phase.active) || { price: 0 };
 
+	// Validation function for stepper steps
+	const validateStep = (step: number): boolean => {
+		switch (step) {
+			case 1: // Welcome step - always valid
+				setValidationError('');
+				return true;
+			case 2: // Quantity step - always valid (has default quantity)
+				setValidationError('');
+				return true;
+			case 3: // Personal info step - validate name and email
+				if (name.trim().length === 0) {
+					setValidationError('Please enter your name');
+					return false;
+				}
+				if (email.trim().length === 0) {
+					setValidationError('Please enter your email');
+					return false;
+				}
+				if (!email.includes('@')) {
+					setValidationError('Please enter a valid email address');
+					return false;
+				}
+				setValidationError('');
+				return true;
+			case 4: // Payment step - always valid (validation happens in payment)
+				setValidationError('');
+				return true;
+			default:
+				setValidationError('');
+				return true;
+		}
+	};
+
   return <>
 		<Magnet padding={500} disabled={false} magnetStrength={10}>
 			<Stepper
 				initialStep={1}
-				onStepChange={(step) => {
-					console.log(step);
-				}}
-				onFinalStepCompleted={() => console.log("All steps completed!")}
+				onFinalStepCompleted={handleCheckout}
 				backButtonText="Previous"
 				nextButtonText="Next"
 				className="w-[100dvw]"
 				stepCircleContainerClassName="border-abyzma-light border-2"
+				validateStep={validateStep}
 			>
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Welcome to the checkout form</h2>
@@ -98,8 +130,13 @@ const Checkout = () => {
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Provide your personal information:</h2>
 					<div className="flex flex-col gap-4">
-						<input type="text" placeholder="Name" className="w-full p-2 rounded-md border-abyzma-light border-2" value={name} onChange={(e) => setName(e.target.value)} />
-						<input type="email" placeholder="Email" className="w-full p-2 rounded-md border-abyzma-light border-2" value={email} onChange={(e) => setEmail(e.target.value)} />
+						<input type="text" placeholder="Name" className="w-full p-2 rounded-md border-abyzma-light border-2" value={name} onChange={(e) => { setName(e.target.value); setValidationError(''); }} />
+						<input type="email" placeholder="Email" className="w-full p-2 rounded-md border-abyzma-light border-2" value={email} onChange={(e) => { setEmail(e.target.value); setValidationError(''); }} />
+						{validationError && (
+							<div className="text-red-500 text mt-2">
+								{validationError}
+							</div>
+						)}
 					</div>
 				</Step>
 				<Step>

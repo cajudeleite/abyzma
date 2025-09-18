@@ -20,6 +20,7 @@ interface StepperProps extends HTMLAttributes<HTMLDivElement> {
     currentStep: number;
     onStepClick: (clicked: number) => void;
   }) => ReactNode;
+  validateStep?: (step: number) => boolean;
 }
 
 export default function Stepper({
@@ -37,6 +38,7 @@ export default function Stepper({
   nextButtonText = 'Continue',
   disableStepIndicators = false,
   renderStepIndicator,
+  validateStep,
   ...rest
 }: StepperProps) {
   const [currentStep, setCurrentStep] = useState<number>(initialStep);
@@ -64,6 +66,10 @@ export default function Stepper({
 
   const handleNext = () => {
     if (!isLastStep) {
+      // Check validation if provided
+      if (validateStep && !validateStep(currentStep)) {
+        return; // Don't proceed if validation fails
+      }
       setDirection(1);
       updateStep(currentStep + 1);
     }
@@ -91,8 +97,11 @@ export default function Stepper({
                     step: stepNumber,
                     currentStep,
                     onStepClick: clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      // Only allow clicking to previous steps or if validation passes
+                      if (clicked < currentStep || (validateStep && validateStep(currentStep))) {
+                        setDirection(clicked > currentStep ? 1 : -1);
+                        updateStep(clicked);
+                      }
                     }
                   })
                 ) : (
@@ -101,8 +110,11 @@ export default function Stepper({
                     disableStepIndicators={disableStepIndicators}
                     currentStep={currentStep}
                     onClickStep={clicked => {
-                      setDirection(clicked > currentStep ? 1 : -1);
-                      updateStep(clicked);
+                      // Only allow clicking to previous steps or if validation passes
+                      if (clicked < currentStep || (validateStep && validateStep(currentStep))) {
+                        setDirection(clicked > currentStep ? 1 : -1);
+                        updateStep(clicked);
+                      }
                     }}
                   />
                 )}
