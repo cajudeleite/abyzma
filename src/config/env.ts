@@ -16,5 +16,13 @@ export const env = {
   // DEBUG: import.meta.env.VITE_DEBUG === 'true',
 } as const;
 
+// Debug logging for environment variables (remove in production)
+if (import.meta.env.PROD) {
+  console.log('Environment variables in production:', {
+    VITE_API_URL: import.meta.env.VITE_API_URL,
+    allEnvVars: import.meta.env,
+  });
+}
+
 // Type-safe environment variable access
 export type EnvConfig = typeof env;

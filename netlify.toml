@@ -9,3 +9,5 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Add your environment variables here
+  # VITE_API_URL = "https://your-production-api-url.com/api"
