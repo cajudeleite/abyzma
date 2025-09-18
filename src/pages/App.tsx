@@ -5,13 +5,15 @@ import CountUp from '../components/CountUp'
 import SplitText from '../components/SplitText'
 import { useEffect, useState } from 'react'
 import { fetchCurrentPhaseTicketsAmount } from '../api/phase'
+import { useNavigate } from 'react-router';
 
 const App = () => {
   const [currentPhaseName, setCurrentPhaseName] = useState('');
   const [currentPhaseTicketsAmount, setCurrentPhaseTicketsAmount] = useState(null);
   const [currentPhaseTicketsLeft, setCurrentPhaseTicketsLeft] = useState(null);
+  const navigate = useNavigate();
 
-  const countdownActive = false;
+  const countdownActive = true;
 
   useEffect(() => {
     fetchCurrentPhaseTicketsAmount().then((data) => {      
@@ -25,7 +27,7 @@ const App = () => {
     <>
       <FuzzyImage
         src={logo}
-        className='w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
+        className='hidden w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
         baseIntensity={0.6}
         hoverIntensity={0.8}
         enableHover={true}
@@ -34,14 +36,14 @@ const App = () => {
         baseIntensity={0.2} 
         hoverIntensity={0.3} 
         enableHover={true}
-        className='text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
+        className='hidden text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
       >
         COMING SOON
       </FuzzyText>
       {currentPhaseTicketsAmount && currentPhaseTicketsLeft && countdownActive && <>
         <SplitText
           text={currentPhaseName}
-          className="text-6xl font-bold"
+          className="text-4xl font-bold"
           delay={100}
           duration={0.6}
           ease="power3.out"
@@ -61,6 +63,12 @@ const App = () => {
           className="text-6xl font-bold"
           />
         <p className='text-2xl font-bold'>Tickets left</p>
+        <button
+          className='bg-abyzma-light text-abyzma-dark text-2xl font-bold px-6 py-3 rounded-md cursor-pointer'
+          onClick={() => navigate('/checkout')}
+        >
+          Buy Tickets
+        </button>
       </>}
     </>
   )

@@ -11,6 +11,18 @@ interface MagnetProps extends HTMLAttributes<HTMLDivElement> {
   innerClassName?: string;
 }
 
+// Throttle function to limit how often the mouse move handler runs
+const throttle = (func: (e: MouseEvent) => void, limit: number) => {
+  let inThrottle: boolean;
+  return (e: MouseEvent) => {
+    if (!inThrottle) {
+      func(e);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
+};
+
 const Magnet: React.FC<MagnetProps> = ({
   children,
   padding = 100,
@@ -25,14 +37,20 @@ const Magnet: React.FC<MagnetProps> = ({
   const [isActive, setIsActive] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const magnetRef = useRef<HTMLDivElement>(null);
+  const animationFrameRef = useRef<number | undefined>(undefined);
+  const lastPositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  useEffect(() => {
-    if (disabled) {
-      setPosition({ x: 0, y: 0 });
-      return;
+  // Throttled version of the mouse move handler
+  const throttledMouseMove = throttle((e: MouseEvent) => {
+    if (!magnetRef.current || disabled) return;
+
+    // Cancel previous animation frame
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
+    // Use requestAnimationFrame for smooth updates
+    animationFrameRef.current = requestAnimationFrame(() => {
       if (!magnetRef.current) return;
 
       const { left, top, width, height } = magnetRef.current.getBoundingClientRect();
@@ -43,21 +61,42 @@ const Magnet: React.FC<MagnetProps> = ({
       const distY = Math.abs(centerY - e.clientY);
 
       if (distX < width / 2 + padding && distY < height / 2 + padding) {
-        setIsActive(true);
         const offsetX = (e.clientX - centerX) / magnetStrength;
         const offsetY = (e.clientY - centerY) / magnetStrength;
-        setPosition({ x: offsetX, y: offsetY });
+        
+        // Only update if position has changed significantly (reduce micro-updates)
+        const threshold = 0.5;
+        if (Math.abs(offsetX - lastPositionRef.current.x) > threshold || 
+            Math.abs(offsetY - lastPositionRef.current.y) > threshold) {
+          setIsActive(true);
+          setPosition({ x: offsetX, y: offsetY });
+          lastPositionRef.current = { x: offsetX, y: offsetY };
+        }
       } else {
-        setIsActive(false);
-        setPosition({ x: 0, y: 0 });
+        if (isActive) {
+          setIsActive(false);
+          setPosition({ x: 0, y: 0 });
+          lastPositionRef.current = { x: 0, y: 0 };
+        }
+      }
+    });
+  }, 16); // ~60fps
+
+  useEffect(() => {
+    if (disabled) {
+      setPosition({ x: 0, y: 0 });
+      setIsActive(false);
+      return;
+    }
+
+    window.addEventListener('mousemove', throttledMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('mousemove', throttledMouseMove);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, [padding, disabled, magnetStrength]);
+  }, [disabled, throttledMouseMove]);
 
   const transitionStyle = isActive ? activeTransition : inactiveTransition;
 

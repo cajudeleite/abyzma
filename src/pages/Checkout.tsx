@@ -4,6 +4,7 @@ import { fetchPhases } from '../api/phase';
 import Stepper, { Step } from '../components/Stepper';
 import Magnet from '../components/Magnet';
 import Counter from '../components/Counter';
+import useIsMobile from '../hooks/useIsMobile';
 import type Phase from '../types/phase';
 
 const Checkout = () => {
@@ -15,6 +16,7 @@ const Checkout = () => {
 	const [email, setEmail] = useState('');
 	const [validationError, setValidationError] = useState('');
 	const [isMessageVisible, setIsMessageVisible] = useState(false);
+	const isMobile = useIsMobile();
 
   useEffect(() => {
     // Check for success or cancel parameters in URL
@@ -97,13 +99,13 @@ const Checkout = () => {
 	};
 
   return <>
-		<Magnet padding={500} disabled={false} magnetStrength={10}>
+		<Magnet padding={500} disabled={isMobile} magnetStrength={10}>
 			<Stepper
 				initialStep={1}
 				onFinalStepCompleted={handleCheckout}
 				backButtonText="Previous"
 				nextButtonText="Next"
-				className="w-[100dvw]"
+				className="w-[90dvw]"
 				stepCircleContainerClassName="border-abyzma-light border-2"
 				validateStep={validateStep}
 				nextButtonProps={{ className: 'bg-abyzma-light text-abyzma-dark font-bold text-xl px-2 pb-1 rounded-md' }}
