@@ -27,9 +27,7 @@ const Checkout = () => {
       setIsMessageVisible(true);
     }
 
-		fetchPhases().then((data) => {
-			console.log(data);
-			
+		fetchPhases().then((data) => {			
 			setPhases(data);
 		});
   }, []);
