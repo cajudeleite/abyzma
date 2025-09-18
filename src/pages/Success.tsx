@@ -12,6 +12,8 @@ const Success = () => {
 			checkForSuccess(urlParams.get('session_id') || '').then((data) => {
 				setSuccess(data.success);
 			});
+		} else {
+			setSuccess(false);
 		}
 	}, []);
 
