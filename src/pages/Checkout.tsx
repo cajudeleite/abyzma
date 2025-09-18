@@ -14,14 +14,17 @@ const Checkout = () => {
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [validationError, setValidationError] = useState('');
+	const [isMessageVisible, setIsMessageVisible] = useState(false);
 
   useEffect(() => {
     // Check for success or cancel parameters in URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('success') === 'true') {
       setMessage('Payment successful! Thank you for your purchase.');
+      setIsMessageVisible(true);
     } else if (urlParams.get('canceled') === 'true') {
       setMessage('Payment canceled. You can try again.');
+      setIsMessageVisible(true);
     }
 
 		fetchPhases().then((data) => {
@@ -31,9 +34,23 @@ const Checkout = () => {
 		});
   }, []);
 
+  // Auto-dismiss message after 5 seconds
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setIsMessageVisible(false);
+        // Clear message after fade out animation completes
+        setTimeout(() => setMessage(''), 300);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
+
   const handleCheckout = async () => {
     setIsLoading(true);
     setMessage('');
+    setIsMessageVisible(false);
 
     try {
       const { checkoutUrl } = await createCheckoutSession(quantity, name, email);
@@ -41,6 +58,7 @@ const Checkout = () => {
       window.location.href = checkoutUrl;
     } catch {
       setMessage('Failed to create checkout session. Please try again.');
+      setIsMessageVisible(true);
       setIsLoading(false);
     }
   };
@@ -90,6 +108,7 @@ const Checkout = () => {
 				className="w-[100dvw]"
 				stepCircleContainerClassName="border-abyzma-light border-2"
 				validateStep={validateStep}
+				nextButtonProps={{ className: 'bg-abyzma-light text-abyzma-dark font-bold text-xl px-2 pb-1 rounded-md' }}
 			>
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Welcome to the checkout form</h2>
@@ -158,7 +177,9 @@ const Checkout = () => {
 		</Magnet>
 
 		{message && (
-			<div className={`mb-6 p-4 rounded text-center ${
+			<div className={`mb-6 p-4 rounded text-center transition-opacity duration-300 ${
+				isMessageVisible ? 'opacity-100' : 'opacity-0'
+			} ${
 				message.includes('successful') 
 					? 'bg-green-100 text-green-800' 
 					: 'bg-yellow-100 text-yellow-800'
