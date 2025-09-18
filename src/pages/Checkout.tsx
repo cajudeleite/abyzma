@@ -117,10 +117,6 @@ const Checkout = () => {
 						</button>
 					</div>
 				</Step>
-				<Step>
-					<h2>Final Step</h2>
-					<p>You made it!</p>
-				</Step>
 			</Stepper>
 		</Magnet>
 
