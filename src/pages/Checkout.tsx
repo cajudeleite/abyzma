@@ -112,7 +112,7 @@ const Checkout = () => {
 			>
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Welcome to the checkout form</h2>
-					<p>Here you'll be able to buy your ticket for the event</p>
+					<p>Here you'll be able to buy your tickets for Roots of the Fall, Abyzma's dark experimental gathering</p>
 				</Step>
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Choose the quantity of tickets:</h2>
