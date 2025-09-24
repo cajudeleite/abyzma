@@ -10,6 +10,7 @@ import App from './pages/App.tsx'
 import Checkout from './pages/Checkout.tsx'
 import Success from './pages/Success.tsx';
 import logo from './assets/images/logo.png'
+import background from './assets/images/background.png'
 
 const router = createBrowserRouter([
   {
@@ -42,14 +43,14 @@ const items = [
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <div className="h-[100dvh] w-[100dvw] bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden">
+    <div className="h-[100dvh] w-[100dvw] bg-abyzma-dark text-abyzma-light flex flex-col items-center justify-center relative space-y-10 overflow-hidden" style={{ backgroundImage: `url(${background})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <img src={logo} alt="Abyzma" className='absolute top-4 right-4 size-14 sm:size-16 md:size-20 cursor-pointer' onClick={() => router.navigate('/')} />
       <Noise
         patternSize={250}
         patternScaleX={1}
         patternScaleY={1}
         patternRefreshInterval={2}
-        patternAlpha={20}
+        patternAlpha={15}
       />
       <RouterProvider router={router} />
       <div className="absolute bottom-0">

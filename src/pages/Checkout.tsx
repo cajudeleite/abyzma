@@ -106,7 +106,7 @@ const Checkout = () => {
 				backButtonText="Previous"
 				nextButtonText="Next"
 				className="w-[90dvw]"
-				stepCircleContainerClassName="border-abyzma-light border-2"
+				stepCircleContainerClassName="border-abyzma-light border-2 bg-abyzma-dark"
 				validateStep={validateStep}
 				nextButtonProps={{ className: 'bg-abyzma-light text-abyzma-dark font-bold text-xl px-2 py-1 rounded-md' }}
 			>
@@ -117,17 +117,17 @@ const Checkout = () => {
 				<Step>
 					<h2 className="text-2xl font-bold mb-4">Choose the quantity of tickets:</h2>
 					<div className="flex">
-						<div className="space-y-4 border-r-2 border-abyzma-light pr-8 mr-8">		
+						<div className="space-y-4 border-r-2 border-abyzma-light pr-8 mr-8 flex flex-col justify-center">		
 							{phases.map((phase, index) => {
 								const activePhaseIndex = phases.findIndex(p => p.active);
 								const isBeforeActive = activePhaseIndex !== -1 && index < activePhaseIndex;
 								
 								return (
-									<p key={phase.name} className={`${phase.active ? 'text-xl font-bold' : 'text-sm'} ${isBeforeActive ? 'line-through' : ''}`}>{phase.name}: {phase.price}€</p>
+									<p key={phase.name} className={`${phase.active ? 'text-lg font-bold' : 'text-sm'} ${isBeforeActive ? 'line-through' : ''}`}>{phase.name}: {phase.price}€</p>
 								);
 							})}
 						</div>
-						<div className="flex flex-col justify-between">	
+						<div className="flex flex-col justify-between space-y-4">	
 							<div className="flex items-center gap-2">
 								<button disabled={quantity === 1} className="bg-abyzma-light text-abyzma-dark text-2xl font-extrabold px-3 pb-1 rounded-md" onClick={() => setQuantity(quantity - 1)}>-</button>
 								<Counter
