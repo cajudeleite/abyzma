@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {createCheckoutSession} from '../api/stripe';
-import { fetchPhases } from '../api/phase';
+import { fetchCurrentPhaseTicketsAmount, fetchPhases } from '../api/phase';
 import Stepper, { Step } from '../components/Stepper';
 import Magnet from '../components/Magnet';
 import Counter from '../components/Counter';
@@ -16,9 +16,12 @@ const Checkout = () => {
 	const [email, setEmail] = useState('');
 	const [validationError, setValidationError] = useState('');
 	const [isMessageVisible, setIsMessageVisible] = useState(false);
+	const [currentPhaseTicketsLeft, setCurrentPhaseTicketsLeft] = useState(null);
 	const isMobile = useIsMobile();
 
   useEffect(() => {
+	fetchCurrentPhaseTicketsAmount().then((data) => setCurrentPhaseTicketsLeft(data.tickets_left));
+
     // Check for success or cancel parameters in URL
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('success') === 'true') {
@@ -140,7 +143,7 @@ const Checkout = () => {
 									fontWeight={900}
 									gradientFrom='transparent'
 								/>
-								<button disabled={quantity === 99} className="bg-abyzma-light text-abyzma-dark text-2xl font-extrabold px-2 pb-1 rounded-md" onClick={() => setQuantity(quantity + 1)}>+</button>
+								<button disabled={quantity === currentPhaseTicketsLeft} className="bg-abyzma-light text-abyzma-dark text-2xl font-extrabold px-2 pb-1 rounded-md" onClick={() => setQuantity(quantity + 1)}>+</button>
 							</div>
 							<p className="text-lg text-right">Total: <span className="font-bold">{quantity * activePhase.price}€</span></p>
 						</div>
