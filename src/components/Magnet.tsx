@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, type ReactNode, type HTMLAttributes } from 'react';
+import React, { useState, useEffect, useRef, useCallback, type ReactNode, type HTMLAttributes } from 'react';
 
 interface MagnetProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -40,8 +40,10 @@ const Magnet: React.FC<MagnetProps> = ({
   const animationFrameRef = useRef<number | undefined>(undefined);
   const lastPositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Throttled version of the mouse move handler
-  const throttledMouseMove = throttle((e: MouseEvent) => {
+  // Throttled mouse move handler using useRef to avoid recreation
+  const throttledMouseMoveRef = useRef<((e: MouseEvent) => void) | null>(null);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!magnetRef.current || disabled) return;
 
     // Cancel previous animation frame
@@ -80,7 +82,12 @@ const Magnet: React.FC<MagnetProps> = ({
         }
       }
     });
-  }, 16); // ~60fps
+  }, [disabled, padding, magnetStrength, isActive]);
+
+  // Create throttled function only once
+  if (!throttledMouseMoveRef.current) {
+    throttledMouseMoveRef.current = throttle(handleMouseMove, 16);
+  }
 
   useEffect(() => {
     if (disabled) {
@@ -89,14 +96,20 @@ const Magnet: React.FC<MagnetProps> = ({
       return;
     }
 
-    window.addEventListener('mousemove', throttledMouseMove, { passive: true });
+    const throttledHandler = throttledMouseMoveRef.current;
+    if (throttledHandler) {
+      window.addEventListener('mousemove', throttledHandler, { passive: true });
+    }
+    
     return () => {
-      window.removeEventListener('mousemove', throttledMouseMove);
+      if (throttledHandler) {
+        window.removeEventListener('mousemove', throttledHandler);
+      }
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [disabled, throttledMouseMove]);
+  }, [disabled]);
 
   const transitionStyle = isActive ? activeTransition : inactiveTransition;
 

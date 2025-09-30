@@ -1,8 +1,13 @@
 import axios from "axios";
 
-const createCheckoutSession = async (quantity: number, name: string, email: string) => {
+const createCheckoutSession = async (quantity: number, name: string, email: string, cuponCode?: string) => {
     try {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-checkout-session`, { quantity, name, email });
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-checkout-session`, { 
+      quantity, 
+      name, 
+      email, 
+      ...(cuponCode && { cuponCode })
+    });
 
     if (response.status !== 200) {
       throw new Error('Failed to create checkout session');
