@@ -7,11 +7,15 @@ const Success = () => {
 
 	useEffect(() => {
 		const urlParams = new URLSearchParams(window.location.search);
+		const sessionId = urlParams.get('session_id');
 
-		if (urlParams.get('session_id') !== null) {
-			checkForSuccess(urlParams.get('session_id') || '').then((data) => {
-				setSuccess(data.success);
-			});
+		if (sessionId !== null) {
+			if (sessionId === "free") setSuccess(true);
+			else {
+				checkForSuccess(sessionId || '').then((data) => {
+					setSuccess(data.success);
+				});
+			}
 		} else {
 			setSuccess(false);
 		}

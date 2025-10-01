@@ -13,8 +13,6 @@ const App = () => {
   const [currentPhaseTicketsLeft, setCurrentPhaseTicketsLeft] = useState(null);
   const navigate = useNavigate();
 
-  const countdownActive = true;
-
   useEffect(() => {
     fetchCurrentPhaseTicketsAmount().then((data) => {      
       setCurrentPhaseName(data.name);
@@ -25,22 +23,7 @@ const App = () => {
 
   return (
     <>
-      <FuzzyImage
-        src={logo}
-        className='hidden w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
-        baseIntensity={0.6}
-        hoverIntensity={0.8}
-        enableHover={true}
-      />
-      <FuzzyText 
-        baseIntensity={0.2} 
-        hoverIntensity={0.3} 
-        enableHover={true}
-        className='hidden text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold select-none'
-      >
-        COMING SOON
-      </FuzzyText>
-      {currentPhaseTicketsAmount && currentPhaseTicketsLeft && countdownActive && <>
+      {currentPhaseTicketsAmount && currentPhaseTicketsLeft ? <>
         <SplitText
           text={currentPhaseName}
           className="text-4xl font-bold"
@@ -69,6 +52,30 @@ const App = () => {
         >
           Buy Tickets
         </button>
+      </> : <>
+        <FuzzyImage
+          src={logo}
+          className='w-2/3 sm:w-1/2 md:w-1/3 xl:w-1/4'
+          baseIntensity={0.4}
+          hoverIntensity={0.6}
+          enableHover={true}
+        />
+        <FuzzyText 
+          baseIntensity={0.1} 
+          hoverIntensity={0.2} 
+          enableHover={true}
+          className='text-5xl md:text-6xl font-extrabold select-none mb-4'
+        >
+          NEXT PHASE
+        </FuzzyText>
+        <FuzzyText 
+          baseIntensity={0.1} 
+          hoverIntensity={0.2} 
+          enableHover={true}
+          className='text-5xl md:text-6xl font-extrabold select-none'
+        >
+          COMING SOON
+        </FuzzyText>
       </>}
     </>
   )
